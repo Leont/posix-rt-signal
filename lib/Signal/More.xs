@@ -1,0 +1,103 @@
+#include <signal.h>
+
+#define PERL_NO_GET_CONTEXT
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+static void get_sys_error(char* buffer, size_t buffer_size) {
+#ifdef _GNU_SOURCE
+	const char* message = strerror_r(errno, buffer, buffer_size);
+	if (message != buffer) {
+		memcpy(buffer, message, buffer_size -1);
+		buffer[buffer_size] = '\0';
+	}
+#else
+	strerror_r(errno, buffer, buffer_size);
+#endif
+}
+
+static void S_die_sys(pTHX_ const char* format) {
+	char buffer[128];
+	get_sys_error(buffer, sizeof buffer);
+	Perl_croak(aTHX_ format, buffer);
+}
+#define die_sys(format) S_die_sys(aTHX_ format)
+
+sigset_t* S_sv_to_sigset(pTHX_ SV* sigmask, const char* name) {
+	if (!SvOK(sigmask)) {
+		return NULL;
+	}
+	if (!SvROK(sigmask) || !sv_isobject(sigmask) || !sv_derived_from(sigmask, "POSIX::SigSet"))
+		Perl_croak(aTHX_ "%s is not of type POSIX::SigSet");
+	IV tmp = SvIV(SvRV(sigmask));
+	return INT2PTR(sigset_t*, tmp);
+}
+#define sv_to_sigset(sigmask, name) S_sv_to_sigset(aTHX_ sigmask, name)
+
+sigset_t* S_get_sigset(pTHX_ SV* signal, const char* name) {
+	if (SvROK(signal))
+		return sv_to_sigset(signal, name);
+	else {
+		int signo = SvIOK(signal) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
+		SV* buffer = sv_2mortal(newSVpvn("", 0));
+		sv_grow(buffer, sizeof(sigset_t));
+		sigset_t* ret = (sigset_t*)SvPV_nolen(buffer);
+		sigemptyset(ret);
+		sigaddset(ret, signo);
+		return ret;
+	}
+}
+#define get_sigset(sigmask, name) S_get_sigset(aTHX_ sigmask, name)
+
+#define NANO_SECONDS 1000000000
+
+static void nv_to_timespec(NV input, struct timespec* output) {
+	output->tv_sec  = (time_t) floor(input);
+	output->tv_nsec = (long) ((input - output->tv_sec) * NANO_SECONDS);
+}
+
+#define undef &PL_sv_undef
+
+MODULE = Signal::More				PACKAGE = Signal::More
+
+SV*
+sigwait(set, timeout = undef)
+	SV* set;
+	SV* timeout;
+	PREINIT:
+		int ret;
+		siginfo_t info;
+	PPCODE:
+		if (SvOK(timeout)) {
+			struct timespec timer;
+			nv_to_timespec(SvNV(timeout), &timer);
+			ret = sigtimedwait(get_sigset(set, "set"), &info, &timer);
+		}
+		else {
+			ret = sigwaitinfo(get_sigset(set, "set"), &info);
+		}
+		if (ret > 0) {
+			mXPUSHi(ret);
+			if (GIMME_V == G_ARRAY)
+				mXPUSHi(info.si_value.sival_int);
+		}
+		else if (GIMME_V != G_VOID && errno != EAGAIN) {
+			die_sys("Couldn't sigwait: %s");
+		}
+
+void
+sigqueue(pid, signal, number = 0)
+	int pid;
+	SV* signal;
+	int number;
+	PREINIT:
+		int ret, signo;
+	CODE:
+		signo = SvIOK(signal) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
+		ret = sigqueue(pid, signo, (union sigval) number);
+		if (ret == 0)
+			XSRETURN_YES;
+		else
+			die_sys("Couldn't sigqueue: %s");
+

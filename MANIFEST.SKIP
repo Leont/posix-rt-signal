@@ -1,0 +1,16 @@
+^_build
+^Build$
+^blib
+~$
+\.bak$
+^MANIFEST\.SKIP$
+\.swp
+\.tdy
+\.tar\.gz
+Signal-More-.*
+^\.git
+^lib/.*\.c$
+^lib/.*\.o$
+^.ignore
+^MYMETA.yml$
+^t/pod.*
