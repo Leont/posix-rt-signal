@@ -1,5 +1,6 @@
-Revision history for Signal-More
+          Revision history for {{$dist->name}}
 
-0.001   2011-01-xx
-        First version, released on an unsuspecting world.
+{{$NEXT}}
+          First version, released on an unsuspecting world.
 
+   
