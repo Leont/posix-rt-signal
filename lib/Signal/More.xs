@@ -39,7 +39,7 @@ sigset_t* S_get_sigset(pTHX_ SV* signal, const char* name) {
 	if (SvROK(signal))
 		return sv_to_sigset(signal, name);
 	else {
-		int signo = SvIOK(signal) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
+		int signo = (SvIOK(signal) || looks_like_number(signal)) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
 		SV* buffer = sv_2mortal(newSVpvn("", 0));
 		sv_grow(buffer, sizeof(sigset_t));
 		sigset_t* ret = (sigset_t*)SvPV_nolen(buffer);
@@ -94,7 +94,7 @@ sigqueue(pid, signal, number = 0)
 	PREINIT:
 		int ret, signo;
 	CODE:
-		signo = SvIOK(signal) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
+		signo = (SvIOK(signal) || looks_like_number(signal)) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
 		ret = sigqueue(pid, signo, (union sigval) number);
 		if (ret == 0)
 			XSRETURN_YES;
