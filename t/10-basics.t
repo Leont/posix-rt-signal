@@ -40,3 +40,11 @@ use Time::HiRes qw/alarm/;
 	is $int, 42;
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
+
+throws_ok { sigqueue($$, -1) } qr/Couldn't sigqueue: Invalid argument/, 'sigqueue dies on error in void context';
+
+{
+	my $sigset = POSIX::SigSet->new(SIGUSR1);
+	throws_ok { sigwait($sigset, -1) } qr/Couldn't sigwait: Invalid argument at/;
+	lives_ok { sigwait($sigset, -1) or 1 };
+}

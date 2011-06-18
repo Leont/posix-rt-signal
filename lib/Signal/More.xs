@@ -82,7 +82,7 @@ sigwait(set, timeout = undef)
 			if (GIMME_V == G_ARRAY)
 				mXPUSHi(info.si_value.sival_int);
 		}
-		else if (GIMME_V != G_VOID && errno != EAGAIN) {
+		else if (GIMME_V == G_VOID && errno != EAGAIN) {
 			die_sys("Couldn't sigwait: %s");
 		}
 
