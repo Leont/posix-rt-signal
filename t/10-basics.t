@@ -1,8 +1,8 @@
-#!perl -T
+#!perl
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 13;
 use Test::Exception;
 use Signal::More qw/sigwait sigqueue/;
 use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIGUSR1 SIGALRM/;
@@ -27,8 +27,8 @@ sub foo { 1 }
 	alarm .2;
 	ok(!defined sigwait($sigset, 0.1), 'Nothing yet');
 
-	my @ret = sigwait('ALRM');
-	is(@ret, 2, 'Returned two elements');
+	my $ret = sigwait('ALRM');
+	is(ref $ret, 'HASH', 'Return value is a hash');
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 
@@ -38,9 +38,11 @@ sub foo { 1 }
 	sigprocmask(SIG_BLOCK, $sigset);
 	sigqueue($$, SIGUSR1, 42);
 
-	my ($signo, $int) = sigwait($sigset);
-	is($signo, SIGUSR1, 'Signal numer is USR1');
-	is($int, 42, 'signal value is 42');
+	my $info = sigwait($sigset);
+	is($info->{signo}, SIGUSR1, 'Signal numer is USR1');
+	is($info->{value}, 42, 'signal value is 42');
+	is($info->{pid}, $$, "pid is $$");
+	is($info->{uid}, $<, "uid is $<");
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 

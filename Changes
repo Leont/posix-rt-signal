@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Make sigwait return hashref instead of list
 
 0.001     2011-02-11 19:26:02 Europe/Amsterdam
           First version, released on an unsuspecting world.

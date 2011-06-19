@@ -57,6 +57,8 @@ static void nv_to_timespec(NV input, struct timespec* output) {
 	output->tv_nsec = (long) ((input - output->tv_sec) * NANO_SECONDS);
 }
 
+#define add_entry(name, value) hv_stores(ret, name, newSViv(value))
+#define add_simple(name) add_entry(#name, info.si_##name)
 #define undef &PL_sv_undef
 
 MODULE = Signal::More				PACKAGE = Signal::More
@@ -66,21 +68,30 @@ sigwait(set, timeout = undef)
 	SV* set;
 	SV* timeout;
 	PREINIT:
-		int ret;
+		int val;
 		siginfo_t info;
 	PPCODE:
 		if (SvOK(timeout)) {
 			struct timespec timer;
 			nv_to_timespec(SvNV(timeout), &timer);
-			ret = sigtimedwait(get_sigset(set, "set"), &info, &timer);
+			val = sigtimedwait(get_sigset(set, "set"), &info, &timer);
 		}
 		else {
-			ret = sigwaitinfo(get_sigset(set, "set"), &info);
+			val = sigwaitinfo(get_sigset(set, "set"), &info);
 		}
-		if (ret > 0) {
-			mXPUSHi(ret);
-			if (GIMME_V == G_ARRAY)
-				mXPUSHi(info.si_value.sival_int);
+		if (val > 0) {
+			HV* ret = newHV();
+			add_simple(signo);
+			add_simple(code);
+			add_simple(errno);
+			add_simple(pid);
+			add_simple(uid);
+			add_simple(status);
+			add_simple(band);
+			add_entry("value", info.si_value.sival_int);
+			hv_stores(ret, "addr", newSVuv(PTR2UV(info.si_addr)));
+			
+			mPUSHs(newRV_noinc((SV*)ret));
 		}
 		else if (GIMME_V == G_VOID && errno != EAGAIN) {
 			die_sys("Couldn't sigwait: %s");
