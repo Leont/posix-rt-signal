@@ -1,3 +1,10 @@
+#if defined linux
+#	ifndef _GNU_SOURCE
+#		define _GNU_SOURCE
+#	endif
+#	define GNU_STRERROR_R
+#endif
+
 #include <signal.h>
 
 #define PERL_NO_GET_CONTEXT
