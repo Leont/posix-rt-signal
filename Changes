@@ -1,6 +1,8 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.003     2011-06-30 15:04:32 Europe/Amsterdam
           Make strerror_r happy on Linux
           Make sure locales don't interfere with tests by calling setlocale
           Try to make FreeBSD pass the illegal argument test, because it's stupid enough not to puke on signo -1
