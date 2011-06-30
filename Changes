@@ -3,6 +3,7 @@
 {{$NEXT}}
           Make strerror_r happy on Linux
           Make sure locales don't interfere with tests by calling setlocale
+          Try to make FreeBSD pass the illegal argument test, because it's stupid enough not to puke on signo -1
 
 0.002     2011-06-20 22:29:01 Europe/Amsterdam
           Make sigwait return hashref instead of list
