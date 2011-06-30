@@ -5,10 +5,11 @@ use warnings;
 use Test::More tests => 13;
 use Test::Exception;
 use Signal::More qw/sigwait sigqueue/;
-use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIGUSR1 SIGALRM/;
+use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIGUSR1 SIGALRM setlocale LC_ALL/;
+
 use Time::HiRes qw/alarm/;
 
-sub foo { 1 }
+setlocale(LC_ALL, 'C');
 
 {
 	my $status = 1;

@@ -2,6 +2,7 @@
 
 {{$NEXT}}
           Make strerror_r happy on Linux
+          Make sure locales don't interfere with tests by calling setlocale
 
 0.002     2011-06-20 22:29:01 Europe/Amsterdam
           Make sigwait return hashref instead of list
