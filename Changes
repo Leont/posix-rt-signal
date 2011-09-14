@@ -1,6 +1,8 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.004     2011-09-15 01:22:19 Europe/Amsterdam
           Handle 5.15.3's new POSIX::SigSet representation
 
 0.003     2011-06-30 15:04:32 Europe/Amsterdam
