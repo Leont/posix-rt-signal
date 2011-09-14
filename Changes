@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Handle 5.15.3's new POSIX::SigSet representation
 
 0.003     2011-06-30 15:04:32 Europe/Amsterdam
           Make strerror_r happy on Linux
