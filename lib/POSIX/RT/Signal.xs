@@ -72,7 +72,7 @@ static void nv_to_timespec(NV input, struct timespec* output) {
 #define add_simple(name) add_entry(#name, info.si_##name)
 #define undef &PL_sv_undef
 
-MODULE = Signal::More				PACKAGE = Signal::More
+MODULE = POSIX::RT::Signal				PACKAGE = POSIX::RT::Signal
 
 SV*
 sigwait(set, timeout = undef)

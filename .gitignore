@@ -7,7 +7,7 @@ pm_to_blib*
 .lwpcookies
 cover_db
 pod2htm*.tmp
-Signal-More-*
+POSIX-RT-Signal-*
 *.c
 *.o
 .*.swp
