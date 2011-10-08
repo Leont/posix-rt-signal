@@ -1,6 +1,8 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.005     2011-10-09 00:12:13 Europe/Amsterdam
           Renamed module from Signal::More to POSIX::RT::Signal
 
 0.004     2011-09-15 01:22:19 Europe/Amsterdam
