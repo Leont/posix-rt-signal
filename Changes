@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Skip invalid argument test on FreeBSD (false negative)
 
 0.005     2011-10-09 00:12:13 Europe/Amsterdam
           Renamed module from Signal::More to POSIX::RT::Signal

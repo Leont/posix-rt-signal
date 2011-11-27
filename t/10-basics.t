@@ -47,7 +47,10 @@ setlocale(LC_ALL, 'C');
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 
-throws_ok { sigqueue($$, 65536) } qr/Couldn't sigqueue: Invalid argument/, 'sigqueue dies on error in void context';
+SKIP: {
+	skip 'Invalid arguments are ignored on FreeBSD', 1 if $^O eq 'freebsd';
+	throws_ok { sigqueue($$, 65536) } qr/Couldn't sigqueue: Invalid argument/, 'sigqueue dies on error in void context';
+}
 
 {
 	my $sigset = POSIX::SigSet->new(SIGUSR1);
