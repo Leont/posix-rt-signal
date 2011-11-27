@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Link to librt
           Skip invalid argument test on FreeBSD (false negative)
 
 0.005     2011-10-09 00:12:13 Europe/Amsterdam
