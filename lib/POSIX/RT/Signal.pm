@@ -79,9 +79,15 @@ Note that not all of these will have meaningful values for all or even most sign
 
 =over 4
 
-=item * L<Signal::Mask>
+=item * L<Signal::Mask|Signal::Mask>
 
-=item * L<POSIX>
+=item * L<IPC::Signal|IPC::Signal>
+
+=item * L<POSIX::RT::Timer|POSIX::RT::Timer>
+
+=item * L<POSIX|POSIX>
+
+=item * L<Linux::FD::Signal|Linux::FD::Signal>
 
 =back
 
