@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Conditionally link to librt
 
 0.006     2011-11-27 17:27:50 Europe/Amsterdam
           Link to librt
