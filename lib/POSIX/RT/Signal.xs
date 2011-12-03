@@ -11,6 +11,7 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#include "ppport.h"
 
 static void get_sys_error(char* buffer, size_t buffer_size) {
 #ifdef _GNU_SOURCE
