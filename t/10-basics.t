@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More 0.88;
 use Test::Exception;
 use POSIX::RT::Signal qw/sigwait sigqueue/;
 use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIGUSR1 SIGALRM setlocale LC_ALL/;
@@ -47,13 +47,16 @@ setlocale(LC_ALL, 'C');
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 
-SKIP: {
-	skip 'Invalid arguments are ignored on FreeBSD', 1 if $^O eq 'freebsd';
+# Invalid arguments are ignored on FreeBSD
+if ($^O ne 'freebsd') {
 	throws_ok { sigqueue($$, 65536) } qr/Couldn't sigqueue: Invalid argument/, 'sigqueue dies on error in void context';
 }
 
 {
 	my $sigset = POSIX::SigSet->new(SIGUSR1);
-	throws_ok { sigwait($sigset, -1) } qr/Couldn't sigwait: Invalid argument at/;
-	lives_ok { sigwait($sigset, -1) or 1 };
+	throws_ok { sigwait($sigset, -1) } qr/Couldn't sigwait: Invalid argument at/, 'Throws on error in void context';
+	lives_ok { sigwait($sigset, -1) or 1 } 'Doesn\'t throw on error in scalar context';
 }
+
+done_testing();
+
