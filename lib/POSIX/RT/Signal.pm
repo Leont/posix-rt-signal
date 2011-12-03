@@ -10,9 +10,11 @@ XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
 
 1;
 
-__END__
+1;
 
 #ABSTRACT: POSIX Real-time signal handling functions
+
+__END__
 
 =head1 SYNOPSIS
 

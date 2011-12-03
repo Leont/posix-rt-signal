@@ -8,9 +8,9 @@ use Sub::Exporter -setup => { exports => [qw/sigwait sigqueue/] };
 
 1;
 
-__END__
-
 #ABSTRACT: Various signal handling functions, legacy name
+
+__END__
 
 =head1 DESCRIPTION
 
