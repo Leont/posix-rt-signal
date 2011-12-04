@@ -3,12 +3,28 @@ package POSIX::RT::Signal;
 use strict;
 use warnings FATAL => 'all';
 
+use Carp qw/croak/;
+use POSIX qw//;
 use XSLoader;
-use Sub::Exporter -setup => { exports => [qw/sigwait sigqueue/] };
+use Sub::Exporter -setup => { exports => [qw/sigwait sigqueue allocate_signal deallocate_signal/] };
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
 
-1;
+my @signals = (defined &POSIX::SIGRT_MIN) ?  (POSIX::SIGRT_MIN() .. POSIX::SIGRT_MAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
+
+my %allowed = map { ( $_ => 1 ) } @signals;
+
+sub allocate_signal {
+	my ($priority) = @_;
+	return +($priority ? shift @signals : pop @signals) || croak 'no more signal numbers available';
+}
+
+sub deallocate_signal {
+	my ($signal) = @_;
+	croak 'Signal not from original set' if not $allowed{$signal};
+	@signals = sort @signals, $signal;
+	return;
+}
 
 1;
 
@@ -74,6 +90,14 @@ Signal value as passed to sigqueue
 =back
 
 Note that not all of these will have meaningful values for all or even most signals
+
+=func allocate_signal($priority)
+
+Pick a signal from the set of signals available to the user. The signal will not be given to any other caller of this function until it has been deallocated. If supported, these will be real-time signals. By default it will choose the lowest priority signal available, but if C<$priority> is true it will pick the highest priority one. If real-time signals are not supported this will return C<SIGUSR1> and C<SIGUSR2>
+
+=func deallocate_signal($signal)
+
+Deallocate the signal to be reused for C<allocate_signal>.
 
 =head1 SEE ALSO
 
