@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Fixed configure requirements
 
 0.007     2011-12-06 17:47:30 Europe/Amsterdam
           Add signal allocation helpers
