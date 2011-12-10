@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Renamed sigwait to the POSIX correct sigwaitinfo
           Stop skipping the wrong test on FreeBSD
           Add ptr value to hash
 

@@ -6,9 +6,11 @@ use warnings FATAL => 'all';
 use Carp qw/croak/;
 use POSIX qw//;
 use XSLoader;
-use Sub::Exporter -setup => { exports => [qw/sigwait sigqueue allocate_signal deallocate_signal/] };
+use Sub::Exporter -setup => { exports => [qw/sigwaitinfo sigwait sigqueue allocate_signal deallocate_signal/] };
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
+
+*sigwait = \&sigwaitinfo;
 
 my @signals = (defined &POSIX::SIGRT_MIN) ?  (POSIX::SIGRT_MIN() .. POSIX::SIGRT_MAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
 
@@ -34,18 +36,18 @@ __END__
 
 =head1 SYNOPSIS
 
- use POSIX::RT::Signal qw/sigqueue sigwait/;
+ use POSIX::RT::Signal qw/sigqueue sigwaitinfo/;
  use Signal::Mask;
  
  $Signal::Mask{USR1}++;
  sigqueue($$, 'USR1');
- sigwait('USR1');
+ my $info = sigwaitinfo('USR1');
 
 =func sigqueue($pid, $sig, $value = 0)
 
 Queue a signal $sig to process $pid, optionally with the additional argument $value. On error an exception is thrown. $sig must be either a signal number(C<14>) or a signal name (C<'ALRM'>).
 
-=func sigwait($signals, $timeout = undef)
+=func sigwaitinfo($signals, $timeout = undef)
 
 Wait for a signal in $signals to arrive and return it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If C<$timeout> is specified, it indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. If $timeout is not defined it may wait indefinitely until a signal arrives. On success it returns a hash with the following entries:
 
@@ -95,6 +97,8 @@ The pointer integer as passed to sigqueue
 
 Note that not all of these will have meaningful values for all or even most signals
 
+C<sigwait> is a deprecated alias for C<sigwaitinfo>.
+
 =func allocate_signal($priority)
 
 Pick a signal from the set of signals available to the user. The signal will not be given to any other caller of this function until it has been deallocated. If supported, these will be real-time signals. By default it will choose the lowest priority signal available, but if C<$priority> is true it will pick the highest priority one. If real-time signals are not supported this will return C<SIGUSR1> and C<SIGUSR2>
@@ -120,3 +124,7 @@ Deallocate the signal to be reused for C<allocate_signal>.
 =back
 
 =cut
+
+=for Pod::Coverage
+sigwait
+=end

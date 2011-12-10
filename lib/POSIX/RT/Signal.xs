@@ -76,7 +76,7 @@ static void nv_to_timespec(NV input, struct timespec* output) {
 MODULE = POSIX::RT::Signal				PACKAGE = POSIX::RT::Signal
 
 SV*
-sigwait(set, timeout = undef)
+sigwaitinfo(set, timeout = undef)
 	SV* set;
 	SV* timeout;
 	PREINIT:
@@ -107,7 +107,7 @@ sigwait(set, timeout = undef)
 			mPUSHs(newRV_noinc((SV*)ret));
 		}
 		else if (GIMME_V == G_VOID && errno != EAGAIN) {
-			die_sys("Couldn't sigwait: %s");
+			die_sys("Couldn't sigwaitinfo: %s");
 		}
 		/* Drop off returning nothing */
 
