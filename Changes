@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Stop skipping the wrong test on FreeBSD
 
 0.008     2011-12-08 20:39:52 Europe/Amsterdam
           Fixed configure requirements

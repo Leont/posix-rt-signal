@@ -47,12 +47,11 @@ setlocale(LC_ALL, 'C');
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 
-# Invalid arguments are ignored on FreeBSD
-if ($^O ne 'freebsd') {
-	throws_ok { sigqueue($$, 65536) } qr/Couldn't sigqueue: Invalid argument/, 'sigqueue dies on error in void context';
-}
+throws_ok { sigqueue($$, 65536) } qr/Couldn't sigqueue: Invalid argument/, 'sigqueue dies on error in void context';
 
-{
+# Invalid timeval arguments are ignored on FreeBSD
+SKIP: { 
+	skip 'Invalid arguments to sigwait are ignored on FreeBSD', 2 if $^O eq 'freebsd';
 	my $sigset = POSIX::SigSet->new(SIGUSR1);
 	throws_ok { sigwait($sigset, -1) } qr/Couldn't sigwait: Invalid argument at/, 'Throws on error in void context';
 	lives_ok { sigwait($sigset, -1) or 1 } 'Doesn\'t throw on error in scalar context';
