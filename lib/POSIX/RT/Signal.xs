@@ -101,6 +101,7 @@ sigwait(set, timeout = undef)
 			add_simple(status);
 			add_simple(band);
 			add_entry("value", info.si_value.sival_int);
+			hv_stores(ret, "ptr", newSVuv(PTR2UV(info.si_value.sival_ptr)));
 			hv_stores(ret, "addr", newSVuv(PTR2UV(info.si_addr)));
 			
 			mPUSHs(newRV_noinc((SV*)ret));
@@ -108,6 +109,7 @@ sigwait(set, timeout = undef)
 		else if (GIMME_V == G_VOID && errno != EAGAIN) {
 			die_sys("Couldn't sigwait: %s");
 		}
+		/* Drop off returning nothing */
 
 void
 sigqueue(pid, signal, number = 0)

@@ -85,7 +85,11 @@ Band event for SIGPOLL
 
 =item * value
 
-Signal value as passed to sigqueue
+Signal integer value as passed to sigqueue
+
+=item * ptr
+
+The pointer integer as passed to sigqueue
 
 =back
 
