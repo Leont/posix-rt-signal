@@ -13,24 +13,24 @@
 #include "XSUB.h"
 #include "ppport.h"
 
-static void get_sys_error(char* buffer, size_t buffer_size) {
+static void get_sys_error(char* buffer, size_t buffer_size, int errnum) {
 #ifdef _GNU_SOURCE
-	const char* message = strerror_r(errno, buffer, buffer_size);
+	const char* message = strerror_r(errnum, buffer, buffer_size);
 	if (message != buffer) {
 		memcpy(buffer, message, buffer_size -1);
 		buffer[buffer_size] = '\0';
 	}
 #else
-	strerror_r(errno, buffer, buffer_size);
+	strerror_r(errnum, buffer, buffer_size);
 #endif
 }
 
-static void S_die_sys(pTHX_ const char* format) {
+static void S_die_sys(pTHX_ const char* format, int errnum) {
 	char buffer[128];
-	get_sys_error(buffer, sizeof buffer);
+	get_sys_error(buffer, sizeof buffer, errnum);
 	Perl_croak(aTHX_ format, buffer);
 }
-#define die_sys(format) S_die_sys(aTHX_ format)
+#define die_sys(format, errnum) S_die_sys(aTHX_ format, errnum)
 
 sigset_t* S_sv_to_sigset(pTHX_ SV* sigmask, const char* name) {
 	if (!SvOK(sigmask))
@@ -75,6 +75,20 @@ static void nv_to_timespec(NV input, struct timespec* output) {
 
 MODULE = POSIX::RT::Signal				PACKAGE = POSIX::RT::Signal
 
+IV
+sigwait(set)
+	SV* set;
+	PREINIT:
+		int val;
+		int info;
+	PPCODE:
+		val = sigwait(get_sigset(set, "set"), &info);
+		if (val > 0)
+			mPUSHi(info);
+		else if (GIMME_V == G_VOID && val != EAGAIN)
+			die_sys("Couldn't sigwaitinfo: %s", val);
+		/* Drop off returning nothing */
+
 SV*
 sigwaitinfo(set, timeout = undef)
 	SV* set;
@@ -107,7 +121,7 @@ sigwaitinfo(set, timeout = undef)
 			mPUSHs(newRV_noinc((SV*)ret));
 		}
 		else if (GIMME_V == G_VOID && errno != EAGAIN) {
-			die_sys("Couldn't sigwaitinfo: %s");
+			die_sys("Couldn't sigwaitinfo: %s", errno);
 		}
 		/* Drop off returning nothing */
 
@@ -124,5 +138,5 @@ sigqueue(pid, signal, number = 0)
 		if (ret == 0)
 			XSRETURN_YES;
 		else
-			die_sys("Couldn't sigqueue: %s");
+			die_sys("Couldn't sigqueue: %s", errno);
 

@@ -10,8 +10,6 @@ use Sub::Exporter -setup => { exports => [qw/sigwaitinfo sigwait sigqueue alloca
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
 
-*sigwait = \&sigwaitinfo;
-
 my @signals = (defined &POSIX::SIGRT_MIN) ?  (POSIX::SIGRT_MIN() .. POSIX::SIGRT_MAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
 
 my %allowed = map { ( $_ => 1 ) } @signals;
@@ -49,7 +47,7 @@ Queue a signal $sig to process $pid, optionally with the additional argument $va
 
 =func sigwaitinfo($signals, $timeout = undef)
 
-Wait for a signal in $signals to arrive and return it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If C<$timeout> is specified, it indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. If $timeout is not defined it may wait indefinitely until a signal arrives. On success it returns a hash with the following entries:
+Wait for a signal in $signals to arrive and return information on it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If C<$timeout> is specified, it indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. If $timeout is not defined it may wait indefinitely until a signal arrives. On success it returns a hash with the following entries:
 
 =over 4
 
@@ -97,7 +95,9 @@ The pointer integer as passed to sigqueue
 
 Note that not all of these will have meaningful values for all or even most signals
 
-C<sigwait> is a deprecated alias for C<sigwaitinfo>.
+=func sigwait($signals)
+
+Wait for a signal in $signals to arrive and return it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name.
 
 =func allocate_signal($priority)
 
