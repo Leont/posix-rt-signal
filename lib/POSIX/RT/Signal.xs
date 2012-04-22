@@ -132,9 +132,11 @@ sigqueue(pid, signal, number = 0)
 	int number;
 	PREINIT:
 		int ret, signo;
+		union sigval number_val;
 	CODE:
 		signo = (SvIOK(signal) || looks_like_number(signal)) && SvIV(signal) ? SvIV(signal) : whichsig(SvPV_nolen(signal));
-		ret = sigqueue(pid, signo, (union sigval) number);
+		number_val.sival_int = number;
+		ret = sigqueue(pid, signo, number_val);
 		if (ret == 0)
 			XSRETURN_YES;
 		else

@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Fixed union casting issue
 
 0.009     2011-12-10 17:25:37 Europe/Amsterdam
           Renamed sigwait to the POSIX correct sigwaitinfo
