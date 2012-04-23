@@ -49,6 +49,8 @@ Queue a signal $sig to process $pid, optionally with the additional argument $va
 
 Wait for a signal in $signals to arrive and return information on it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If C<$timeout> is specified, it indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. If $timeout is not defined it may wait indefinitely until a signal arrives. On success it returns a hash with the following entries:
 
+C<sigtimedwait> is an alias for this function.
+
 =over 4
 
 =item * signo

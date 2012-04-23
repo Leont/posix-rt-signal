@@ -93,6 +93,8 @@ SV*
 sigwaitinfo(set, timeout = undef)
 	SV* set;
 	SV* timeout;
+	ALIAS:
+		sigtimedwait = 0
 	PREINIT:
 		int val;
 		siginfo_t info;
