@@ -1,10 +1,3 @@
-#if defined linux
-#	ifndef _GNU_SOURCE
-#		define _GNU_SOURCE
-#	endif
-#	define GNU_STRERROR_R
-#endif
-
 #include <signal.h>
 
 #define PERL_NO_GET_CONTEXT
@@ -14,14 +7,18 @@
 #include "ppport.h"
 
 static void get_sys_error(char* buffer, size_t buffer_size, int errnum) {
-#ifdef _GNU_SOURCE
-	const char* message = strerror_r(errnum, buffer, buffer_size);
-	if (message != buffer) {
-		memcpy(buffer, message, buffer_size -1);
-		buffer[buffer_size] = '\0';
-	}
+#if HAVE_STRERROR_R
+#	if STRERROR_R_PROTO == REENTRANT_PROTO_B_IBW
+	const char* message = strerror_r(errno, buffer, buffer_size);
+	if (message != buffer)
+		memcpy(buffer, message, buffer_size);
+#	else
+	strerror_r(errno, buffer, buffer_size);
+#	endif
 #else
-	strerror_r(errnum, buffer, buffer_size);
+	const char* message = strerror(errno);
+	strncpy(buffer, message, buffer_size - 1);
+	buffer[buffer_size - 1] = '\0';
 #endif
 }
 
