@@ -80,7 +80,7 @@ sigwait(set)
 		int info;
 	PPCODE:
 		val = sigwait(get_sigset(set, "set"), &info);
-		if (val > 0)
+		if (val == 0)
 			mPUSHi(info);
 		else if (GIMME_V == G_VOID && val != EAGAIN)
 			die_sys("Couldn't sigwaitinfo: %s", val);

@@ -47,6 +47,7 @@ setlocale(LC_ALL, 'C');
 
 	sigqueue($$, SIGUSR1, 42);
 	my $signo = sigwait($sigset);
+	is($signo, SIGUSR1, 'Got SIGUSR1');
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 

@@ -1,8 +1,10 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Made sigwait actually return the right value
 
 0.010     2012-04-23 02:20:47 Europe/Amsterdam
+          Added a proper sigwait function
           Fixed union casting issue
 
 0.009     2011-12-10 17:25:37 Europe/Amsterdam
