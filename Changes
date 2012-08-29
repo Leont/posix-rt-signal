@@ -2,6 +2,7 @@
 
 {{$NEXT}}
           Check HAS_STRERROR_R correctly
+          Fix C89 compatibility
 
 0.011     2012-08-13 21:26:00 Europe/Bucharest
           Made sigwait actually return the right value
