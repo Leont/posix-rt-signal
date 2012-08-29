@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          Check HAS_STRERROR_R correctly
 
 0.011     2012-08-13 21:26:00 Europe/Bucharest
           Made sigwait actually return the right value
