@@ -1,6 +1,8 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.012     2012-09-03 19:20:25 Europe/Amsterdam
           Check HAS_STRERROR_R correctly
           Fix C89 compatibility
 
