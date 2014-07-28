@@ -22,7 +22,7 @@ sub allocate_signal {
 sub deallocate_signal {
 	my ($signal) = @_;
 	croak 'Signal not from original set' if not $allowed{$signal};
-	@signals = sort @signals, $signal;
+	@signals = sort { $a <=> $b } @signals, $signal;
 	return;
 }
 
