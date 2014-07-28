@@ -6,7 +6,7 @@ use warnings FATAL => 'all';
 use Carp qw/croak/;
 use POSIX qw//;
 use XSLoader;
-use Sub::Exporter -setup => { exports => [qw/sigwaitinfo sigwait sigqueue allocate_signal deallocate_signal/] };
+use Sub::Exporter::Progressive -setup => { exports => [qw/sigwaitinfo sigwait sigqueue allocate_signal deallocate_signal/] };
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
 
