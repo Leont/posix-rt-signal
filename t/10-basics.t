@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More 0.88;
 use Test::Exception;
-use POSIX::RT::Signal qw/sigwait sigwaitinfo sigqueue/;
+use POSIX::RT::Signal -all;
 use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIGUSR1 SIGALRM setlocale LC_ALL/;
 
 use Time::HiRes qw/alarm/;
@@ -60,6 +60,13 @@ SKIP: {
 	throws_ok { sigwaitinfo($sigset, -1) } qr/Couldn't sigwaitinfo: Invalid argument at/, 'sigwaitinfo throws on error in void context';
 	lives_ok { sigwaitinfo($sigset, -1) or 1 } 'sigwaitinfo doesn\'t throw on error in scalar context';
 }
+
+my $first = allocate_signal();
+ok($first, 'Can allocate a signal');
+my $second = allocate_signal(1);
+cmp_ok($first, '>', $second, 'Priority signal is lower than normal one');
+deallocate_signal($first);
+is(allocate_signal, $first, 'de- and re-allocating a signal returns the same signal');
 
 done_testing();
 
