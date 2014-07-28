@@ -3,6 +3,7 @@
 {{$NEXT}}
           Use Sub::Exporter::Progressive instead of Sub::Exporter
           Sort signals correctly after deallocation
+          Share signal allocation list between threads
 
 0.012     2012-09-03 19:20:25 Europe/Amsterdam
           Check HAS_STRERROR_R correctly

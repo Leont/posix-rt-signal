@@ -7,10 +7,11 @@ use Carp qw/croak/;
 use POSIX qw//;
 use XSLoader;
 use Sub::Exporter::Progressive -setup => { exports => [qw/sigwaitinfo sigwait sigqueue allocate_signal deallocate_signal/] };
+use threads::shared;
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
 
-my @signals = (defined &POSIX::SIGRT_MIN) ?  (POSIX::SIGRT_MIN() .. POSIX::SIGRT_MAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
+my @signals : shared = (defined &POSIX::SIGRT_MIN) ?  (POSIX::SIGRT_MIN() .. POSIX::SIGRT_MAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
 
 my %allowed = map { ( $_ => 1 ) } @signals;
 
