@@ -30,8 +30,6 @@ sub deallocate_signal {
 
 #ABSTRACT: POSIX Real-time signal handling functions
 
-__END__
-
 =head1 SYNOPSIS
 
  use POSIX::RT::Signal qw/sigqueue sigwaitinfo/;
@@ -40,6 +38,10 @@ __END__
  $Signal::Mask{USR1}++;
  sigqueue($$, 'USR1');
  my $info = sigwaitinfo('USR1');
+
+=head1 DESCRIPTION
+
+This module exposes several advanced features and interfaces of POSIX real-time signals.
 
 =func sigqueue($pid, $sig, $value = 0)
 
