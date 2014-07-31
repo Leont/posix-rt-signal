@@ -4,6 +4,9 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+
+#define NEED_newRV_noinc
+#define NEED_sv_2pv_flags
 #include "ppport.h"
 
 static void get_sys_error(char* buffer, size_t buffer_size, int errnum) {
