@@ -117,6 +117,7 @@ sigwaitinfo(set, timeout = undef)
 			add_simple(uid);
 			add_simple(status);
 			add_simple(band);
+			add_simple(fd);
 			add_entry("value", info.si_value.sival_int, iv);
 			add_entry("ptr", PTR2UV(info.si_value.sival_ptr), uv);
 			add_entry("addr", PTR2UV(info.si_addr), uv);
