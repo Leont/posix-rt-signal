@@ -1,3 +1,4 @@
+#define _POSIX_PTHREAD_SEMANTICS
 #include <signal.h>
 
 #define PERL_NO_GET_CONTEXT
