@@ -11,7 +11,7 @@ use threads::shared;
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
 
-my @signals : shared = (defined &POSIX::SIGRT_MIN) ?  (POSIX::SIGRT_MIN() .. POSIX::SIGRT_MAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
+my @signals : shared = (defined &POSIX::SIGRTMIN) ?  (POSIX::SIGRTMIN() .. POSIX::SIGRTMAX()) : (POSIX::SIGUSR1(), POSIX::SIGUSR2());
 
 my %allowed = map { ( $_ => 1 ) } @signals;
 
