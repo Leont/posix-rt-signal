@@ -6,7 +6,7 @@ use warnings FATAL => 'all';
 use Carp qw/croak/;
 use POSIX qw//;
 use XSLoader;
-use Sub::Exporter::Progressive -setup => { exports => [qw/sigwaitinfo sigwait sigqueue allocate_signal deallocate_signal/] };
+use Sub::Exporter::Progressive -setup => { exports => [qw/sigwaitinfo sigtimedwait sigwait sigqueue allocate_signal deallocate_signal/] };
 use threads::shared;
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
@@ -48,9 +48,9 @@ This module exposes several advanced features and interfaces of POSIX real-time 
 
 Queue a signal $sig to process C<$pid>, optionally with the additional argument C<$value>. On error an exception is thrown. C<$sig> must be either a signal number(C<14>) or a signal name (C<'ALRM'>). If the signal queue is full, it returns undef and sets C<$!> to EAGAIN.
 
-=func sigwaitinfo($signals, $timeout = undef)
+=func sigwaitinfo($signals)
 
-Wait for a signal in C<$signals> to arrive and return information on it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If C<$timeout> is specified, it indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. If C<$timeout> is not defined it may wait indefinitely until a signal arrives. On success it returns a hash with the following entries:
+Wait for a signal in C<$signals> to arrive and return information on it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If interrupted in non-void context it returns false, on any other error it throws an exception.
 
 =over 4
 
@@ -98,9 +98,9 @@ The pointer integer as passed to sigqueue
 
 Note that not all of these will have meaningful values for all or even most signals
 
-=func sigtimedwait
+=func sigtimedwait($signals, $timeout)
 
-This is an alias for sigwaitinfo.
+This is like C<sigwaitinfo>, except it has an additional timeout that indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. Otherwise it behaves exactly the same as C<sigwaitinfo>.
 
 =func sigwait($signals)
 

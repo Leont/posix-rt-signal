@@ -33,13 +33,6 @@ static void S_die_sys(pTHX_ const char* format, int errnum) {
 }
 #define die_sys(format, errnum) S_die_sys(aTHX_ format, errnum)
 
-#define NANO_SECONDS 1000000000
-
-static void nv_to_timespec(NV input, struct timespec* output) {
-	output->tv_sec  = (time_t) floor(input);
-	output->tv_nsec = (long) ((input - output->tv_sec) * NANO_SECONDS);
-}
-
 #define undef &PL_sv_undef
 
 typedef int signo_t;
@@ -56,21 +49,32 @@ int sigwait(sigset_t* sigset)
 	OUTPUT:
 		RETVAL
 
-siginfo_t sigwaitinfo(sigset_t* set, SV* timeout = undef)
+siginfo_t sigwaitinfo(sigset_t* set)
 	ALIAS:
 		sigtimedwait = 0
 	PREINIT:
 		int val;
 		siginfo_t info;
 	CODE:
-		if (SvOK(timeout)) {
-			struct timespec timer;
-			nv_to_timespec(SvNV(timeout), &timer);
-			val = sigtimedwait(set, &RETVAL, &timer);
+		val = sigwaitinfo(set, &RETVAL);
+
+		if (val <= 0) {
+			if (GIMME_V == G_VOID && errno != EAGAIN)
+				die_sys("Couldn't sigwaitinfo: %s", errno);
+			else
+				XSRETURN_UNDEF;
 		}
-		else {
-			val = sigwaitinfo(set, &RETVAL);
-		}
+	OUTPUT:
+		RETVAL
+
+siginfo_t sigtimedwait(sigset_t* set, struct timespec timeout)
+	ALIAS:
+		sigtimedwait = 0
+	PREINIT:
+		int val;
+		siginfo_t info;
+	CODE:
+		val = sigtimedwait(set, &RETVAL, &timeout);
 
 		if (val <= 0) {
 			if (GIMME_V == G_VOID && errno != EAGAIN)
