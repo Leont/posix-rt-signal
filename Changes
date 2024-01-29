@@ -1,6 +1,7 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - Use Signal typemap
 
 0.015     2014-09-03 14:26:17+02:00 Europe/Amsterdam
           Correctly detect realtime signal numbers
