@@ -1,6 +1,8 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.016     2024-01-30 19:13:53+01:00 Europe/Brussels
           - Use Signal typemap
 
 0.015     2014-09-03 14:26:17+02:00 Europe/Amsterdam
