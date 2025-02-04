@@ -45,8 +45,8 @@ int sigwait(sigset_t* sigset)
 		int val;
 	CODE:
 		val = sigwait(sigset, &RETVAL);
-		if (val != 0 && GIMME_V == G_VOID && val != EAGAIN)
-			die_sys("Couldn't sigwaitinfo: %s", val);
+		if (val != 0)
+			XSRETURN_UNDEF;
 	OUTPUT:
 		RETVAL
 
@@ -59,12 +59,8 @@ Signal::Info sigwaitinfo(sigset_t* set)
 	CODE:
 		val = sigwaitinfo(set, &info);
 
-		if (val <= 0) {
-			if (GIMME_V == G_VOID && errno != EAGAIN)
-				die_sys("Couldn't sigwaitinfo: %s", errno);
-			else
-				XSRETURN_UNDEF;
-		}
+		if (val < 0)
+			XSRETURN_UNDEF;
 		RETVAL = &info;
 	OUTPUT:
 		RETVAL
@@ -78,12 +74,8 @@ Signal::Info sigtimedwait(sigset_t* set, struct timespec timeout)
 	CODE:
 		val = sigtimedwait(set, &info, &timeout);
 
-		if (val <= 0) {
-			if (GIMME_V == G_VOID && errno != EAGAIN)
-				die_sys("Couldn't sigwaitinfo: %s", errno);
-			else
-				XSRETURN_UNDEF;
-		}
+		if (val < 0)
+			XSRETURN_UNDEF;
 		RETVAL = &info;
 	OUTPUT:
 		RETVAL
@@ -95,10 +87,7 @@ bool sigqueue(int pid, signo_t signo, int number = 0)
 	CODE:
 		number_val.sival_int = number;
 		ret = sigqueue(pid, signo, number_val);
-		if (ret == 0)
-			RETVAL = TRUE;
-		else
-			die_sys("Couldn't sigqueue: %s", errno);
+		RETVAL = ret == 0;
 	OUTPUT:
 		RETVAL
 

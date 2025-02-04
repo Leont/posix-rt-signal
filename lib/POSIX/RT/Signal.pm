@@ -51,11 +51,11 @@ Queue a signal $sig to process C<$pid>, optionally with the additional argument 
 
 =func sigwaitinfo($signals)
 
-Wait for a signal in C<$signals> to arrive and return information on it as a L<Signal::Info> object. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If interrupted in non-void context it returns false, on any other error it throws an exception.
+Wait for a signal in C<$signals> to arrive and return information on it as a L<Signal::Info> object. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. On error it returns an C<undef> and C<$!> should be consulted.
 
 =func sigtimedwait($signals, $timeout)
 
-This is like C<sigwaitinfo>, except it has an additional timeout that indicates the maximal time the thread is suspended in fractional seconds; if no signal is received it returns an empty list, or in void context an exception. Otherwise it behaves exactly the same as C<sigwaitinfo>.
+This is like C<sigwaitinfo>, except it has an additional timeout that indicates the maximal time the thread is suspended in fractional seconds; if no signal is received C<$!> will be C<EAGAIN>. Otherwise it behaves exactly the same as C<sigwaitinfo>.
 
 =func sigwait($signals)
 
