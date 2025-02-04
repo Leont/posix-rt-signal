@@ -75,13 +75,23 @@ Deallocate the signal to be reused for C<allocate_signal>.
 
 =item * L<Signal::Mask|Signal::Mask>
 
+An easy interface to signal masks
+
 =item * L<IPC::Signal|IPC::Signal>
+
+Utility functions dealing with signals
 
 =item * L<POSIX::RT::Timer|POSIX::RT::Timer>
 
-=item * L<POSIX|POSIX>
+POSIX real-time timers. These will produce signals on timeout.
 
 =item * L<Linux::FD::Signal|Linux::FD::Signal>
+
+Linux signal file descriptors. This is an alternative interface to signals that allows for polling alongside
+
+=item * L<POSIX|POSIX>
+
+This core module contains various used in dealing with signals.
 
 =back
 
