@@ -51,8 +51,6 @@ int sigwait(sigset_t* sigset)
 		RETVAL
 
 Signal::Info sigwaitinfo(sigset_t* set)
-	ALIAS:
-		sigtimedwait = 0
 	PREINIT:
 		int val;
 		siginfo_t info;
@@ -66,8 +64,6 @@ Signal::Info sigwaitinfo(sigset_t* set)
 		RETVAL
 
 Signal::Info sigtimedwait(sigset_t* set, struct timespec timeout)
-	ALIAS:
-		sigtimedwait = 0
 	PREINIT:
 		int val;
 		siginfo_t info;
