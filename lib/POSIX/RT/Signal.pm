@@ -1,7 +1,7 @@
 package POSIX::RT::Signal;
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Exporter 'import';
 our @EXPORT = qw/sigwaitinfo sigtimedwait sigwait sigqueue allocate_signal deallocate_signal/;
