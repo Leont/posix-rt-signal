@@ -5,7 +5,7 @@ use warnings;
 use Errno;
 use Test::More 0.88;
 use Test::Exception;
-use POSIX::RT::Signal -all;
+use POSIX::RT::Signal ':all';
 use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIGUSR1 SIGALRM setlocale LC_ALL EINVAL/;
 
 use Time::HiRes qw/alarm/;

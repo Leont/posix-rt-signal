@@ -3,10 +3,13 @@ package POSIX::RT::Signal;
 use strict;
 use warnings FATAL => 'all';
 
+use Exporter 'import';
+our @EXPORT = qw/sigwaitinfo sigtimedwait sigwait sigqueue allocate_signal deallocate_signal/;
+our %EXPORT_TAGS = (all => \@EXPORT);
+
 use Carp qw/croak/;
 use POSIX qw//;
 use XSLoader;
-use Sub::Exporter::Progressive -setup => { exports => [qw/sigwaitinfo sigtimedwait sigwait sigqueue allocate_signal deallocate_signal/] };
 use Signal::Info;
 use threads::shared;
 
