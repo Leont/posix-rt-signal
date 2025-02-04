@@ -33,6 +33,24 @@ static void S_die_sys(pTHX_ const char* format, int errnum) {
 }
 #define die_sys(format, errnum) S_die_sys(aTHX_ format, errnum)
 
+#if defined(USE_ITHREADS) && (defined(__linux) || defined(__FreeBSD__))
+#define THREAD_SCHED
+static pthread_t S_get_pthread(pTHX_ SV* thread_handle) {
+	SV* tmp;
+	pthread_t* ret;
+	dSP;
+	PUSHMARK(SP);
+	PUSHs(thread_handle);
+	PUTBACK;
+	call_method("_handle", G_SCALAR);
+	SPAGAIN;
+	tmp = POPs;
+	ret = INT2PTR(pthread_t* ,SvUV(tmp));
+	return *ret;
+}
+#define get_pthread(handle) S_get_pthread(aTHX_ handle)
+#endif
+
 #define undef &PL_sv_undef
 
 typedef int signo_t;
@@ -76,13 +94,18 @@ Signal::Info sigtimedwait(sigset_t* set, struct timespec timeout)
 	OUTPUT:
 		RETVAL
 
-bool sigqueue(int pid, signo_t signo, int number = 0)
+bool sigqueue(SV* pid, signo_t signo, int number = 0)
 	PREINIT:
 		int ret;
 		union sigval number_val;
 	CODE:
 		number_val.sival_int = number;
-		ret = sigqueue(pid, signo, number_val);
+#ifdef THREAD_SCHED
+		if (SvOK(pid) && SvROK(pid) && sv_derived_from(pid, "threads"))
+			ret = pthread_sigqueue(get_pthread(pid), signo, number_val);
+		else
+#endif
+			ret = sigqueue(SvIV(pid), signo, number_val);
 		RETVAL = ret == 0;
 	OUTPUT:
 		RETVAL

@@ -50,7 +50,7 @@ This module exposes several advanced features and interfaces of POSIX real-time 
 
 =func sigqueue($pid, $sig, $value = 0)
 
-Queue a signal $sig to process C<$pid>, optionally with the additional argument C<$value>. On error an exception is thrown. C<$sig> must be either a signal number(C<14>) or a signal name (C<'ALRM'>). If the signal queue is full, it returns undef and sets C<$!> to EAGAIN.
+Queue a signal $sig to process C<$pid> (or the thread if passed a thread handle), optionally with the additional argument C<$value>. On error an exception is thrown. C<$sig> must be either a signal number(C<14>) or a signal name (C<'ALRM'>). If the signal queue is full, it returns undef and sets C<$!> to EAGAIN.
 
 =func sigwaitinfo($signals)
 
