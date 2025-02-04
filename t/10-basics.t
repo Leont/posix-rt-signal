@@ -29,7 +29,7 @@ setlocale(LC_ALL, 'C');
 	ok(!defined sigtimedwait($sigset, 0.1), 'Nothing yet');
 
 	my $ret = sigwaitinfo('ALRM');
-	is(ref $ret, 'HASH', 'Return value is a hash');
+	isa_ok($ret, 'Signal::Info', 'Return value is a hash');
 	sigprocmask(SIG_UNBLOCK, $sigset);
 }
 
@@ -40,10 +40,10 @@ setlocale(LC_ALL, 'C');
 	sigqueue($$, SIGUSR1, 42);
 
 	my $info = sigwaitinfo($sigset);
-	is($info->{signo}, SIGUSR1, 'Signal numer is USR1');
-	is($info->{value}, 42, 'signal value is 42');
-	is($info->{pid}, $$, "pid is $$");
-	is($info->{uid}, $<, "uid is $<");
+	is($info->signo, SIGUSR1, 'Signal numer is USR1');
+	is($info->value, 42, 'signal value is 42');
+	is($info->pid, $$, "pid is $$");
+	is($info->uid, $<, "uid is $<");
 
 	sigqueue($$, SIGUSR1, 42);
 	my $signo = sigwait($sigset);

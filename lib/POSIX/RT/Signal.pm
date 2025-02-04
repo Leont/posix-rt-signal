@@ -7,6 +7,7 @@ use Carp qw/croak/;
 use POSIX qw//;
 use XSLoader;
 use Sub::Exporter::Progressive -setup => { exports => [qw/sigwaitinfo sigtimedwait sigwait sigqueue allocate_signal deallocate_signal/] };
+use Signal::Info;
 use threads::shared;
 
 XSLoader::load(__PACKAGE__, __PACKAGE__->VERSION);
@@ -50,53 +51,7 @@ Queue a signal $sig to process C<$pid>, optionally with the additional argument 
 
 =func sigwaitinfo($signals)
 
-Wait for a signal in C<$signals> to arrive and return information on it. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If interrupted in non-void context it returns false, on any other error it throws an exception.
-
-=over 4
-
-=item * signo
-
-The signal number
-
-=item * code
-
-The signal code, a signal-specific code that gives the reason why the signal was generated
-
-=item * errno
-
-If non-zero, an errno value associated with this signal
-
-=item * pid
-
-Sending process ID
-
-=item * uid
-
-Real user ID of sending process
-
-=item * addr
-
-The address of faulting instruction
-
-=item * status
-
-Exit value or signal
-
-=item * band
-
-Band event for SIGPOLL
-
-=item * value
-
-Signal integer value as passed to sigqueue
-
-=item * ptr
-
-The pointer integer as passed to sigqueue
-
-=back
-
-Note that not all of these will have meaningful values for all or even most signals
+Wait for a signal in C<$signals> to arrive and return information on it as a L<Signal::Info> object. The signal handler (if any) will not be called. Unlike signal handlers it is not affected by signal masks, in fact you are expected to mask signals you're waiting for. C<$signals> must either be a POSIX::SigSet object, a signal number or a signal name. If interrupted in non-void context it returns false, on any other error it throws an exception.
 
 =func sigtimedwait($signals, $timeout)
 

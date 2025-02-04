@@ -36,6 +36,7 @@ static void S_die_sys(pTHX_ const char* format, int errnum) {
 #define undef &PL_sv_undef
 
 typedef int signo_t;
+typedef siginfo_t* Signal__Info;
 
 MODULE = POSIX::RT::Signal				PACKAGE = POSIX::RT::Signal
 
@@ -49,14 +50,14 @@ int sigwait(sigset_t* sigset)
 	OUTPUT:
 		RETVAL
 
-siginfo_t sigwaitinfo(sigset_t* set)
+Signal::Info sigwaitinfo(sigset_t* set)
 	ALIAS:
 		sigtimedwait = 0
 	PREINIT:
 		int val;
 		siginfo_t info;
 	CODE:
-		val = sigwaitinfo(set, &RETVAL);
+		val = sigwaitinfo(set, &info);
 
 		if (val <= 0) {
 			if (GIMME_V == G_VOID && errno != EAGAIN)
@@ -64,17 +65,18 @@ siginfo_t sigwaitinfo(sigset_t* set)
 			else
 				XSRETURN_UNDEF;
 		}
+		RETVAL = &info;
 	OUTPUT:
 		RETVAL
 
-siginfo_t sigtimedwait(sigset_t* set, struct timespec timeout)
+Signal::Info sigtimedwait(sigset_t* set, struct timespec timeout)
 	ALIAS:
 		sigtimedwait = 0
 	PREINIT:
 		int val;
 		siginfo_t info;
 	CODE:
-		val = sigtimedwait(set, &RETVAL, &timeout);
+		val = sigtimedwait(set, &info, &timeout);
 
 		if (val <= 0) {
 			if (GIMME_V == G_VOID && errno != EAGAIN)
@@ -82,6 +84,7 @@ siginfo_t sigtimedwait(sigset_t* set, struct timespec timeout)
 			else
 				XSRETURN_UNDEF;
 		}
+		RETVAL = &info;
 	OUTPUT:
 		RETVAL
 
