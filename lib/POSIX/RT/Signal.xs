@@ -26,13 +26,6 @@ static void get_sys_error(char* buffer, size_t buffer_size, int errnum) {
 #endif
 }
 
-static void S_die_sys(pTHX_ const char* format, int errnum) {
-	char buffer[128];
-	get_sys_error(buffer, sizeof buffer, errnum);
-	Perl_croak(aTHX_ format, buffer);
-}
-#define die_sys(format, errnum) S_die_sys(aTHX_ format, errnum)
-
 #if defined(USE_ITHREADS) && (defined(__linux) || defined(__FreeBSD__))
 #define THREAD_SCHED
 static pthread_t S_get_pthread(pTHX_ SV* thread_handle) {
