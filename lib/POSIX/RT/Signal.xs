@@ -64,26 +64,28 @@ int sigwait(sigset_t* sigset)
 Signal::Info sigwaitinfo(sigset_t* set)
 	PREINIT:
 		int val;
-		siginfo_t info;
 	CODE:
-		val = sigwaitinfo(set, &info);
+		RETVAL = safecalloc(1, sizeof(siginfo_t));
+		val = sigwaitinfo(set, RETVAL);
 
-		if (val < 0)
+		if (val < 0) {
+			Safefree(RETVAL);
 			XSRETURN_UNDEF;
-		RETVAL = &info;
+		}
 	OUTPUT:
 		RETVAL
 
 Signal::Info sigtimedwait(sigset_t* set, struct timespec timeout)
 	PREINIT:
 		int val;
-		siginfo_t info;
 	CODE:
-		val = sigtimedwait(set, &info, &timeout);
+		RETVAL = safecalloc(1, sizeof(siginfo_t));
+		val = sigtimedwait(set, RETVAL, &timeout);
 
-		if (val < 0)
+		if (val < 0) {
+			Safefree(RETVAL);
 			XSRETURN_UNDEF;
-		RETVAL = &info;
+		}
 	OUTPUT:
 		RETVAL
 

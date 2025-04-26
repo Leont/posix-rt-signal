@@ -2,6 +2,7 @@
 
 {{$NEXT}}
           - Allow sigqueue to thread
+          - Adapt to new T_OPAQUEOBJ output map
 
 0.018     2025-02-04 04:34:38+01:00 Europe/Brussels
           - Use Signal::Info objects in sigwaitinfo/sigtimedinfo
