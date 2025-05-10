@@ -1,6 +1,8 @@
           Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.019     2025-05-10 16:59:14+02:00 Europe/Brussels
           - Allow sigqueue to thread
           - Adapt to new T_OPAQUEOBJ output map
 
